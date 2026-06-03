@@ -64,27 +64,17 @@
                                     </script>
                                 {% endif %}
                             {% elif 'drive.google.com' in config.hero_video_url %}
-                                <!-- Google Drive Video -->
-                                <script>
-                                    // Extract Google Drive file ID
-                                    function getGoogleDriveID(url) {
-                                        const regExp = /\/file\/d\/([^\/]+)/;
-                                        const match = url.match(regExp);
-                                        return match ? match[1] : null;
-                                    }
-                                    const driveID = getGoogleDriveID("{{ config.hero_video_url }}");
-                                </script>
-                                <iframe class="intro-video youtube-video" id="heroVideo"
-                                    frameborder="0" 
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                    allowfullscreen>
-                                </iframe>
-                                <script>
-                                    // Set the iframe src with Google Drive embed URL
-                                    if (driveID) {
-                                        document.getElementById('heroVideo').src = `https://drive.google.com/file/d/${driveID}/preview`;
-                                    }
-                                </script>
+                                <!-- Google Drive Video - Show as link since embedding can be slow -->
+                                <div class="video-placeholder" style="display: flex; align-items: center; justify-content: center; min-height: 400px; background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1)); border-radius: 30px; padding: 40px; text-align: center;">
+                                    <div>
+                                        <i class="fas fa-video" style="font-size: 80px; color: var(--color-primary); margin-bottom: 20px;"></i>
+                                        <h3 style="color: var(--color-primary); margin-bottom: 15px;">Watch My Introduction Video</h3>
+                                        <p style="color: var(--color-text-secondary); margin-bottom: 25px;">Click below to watch my introduction</p>
+                                        <a href="{{ config.hero_video_url }}" target="_blank" rel="noopener" class="btn btn-primary btn-lg">
+                                            <i class="fas fa-play-circle"></i> Watch Video
+                                        </a>
+                                    </div>
+                                </div>
                             {% else %}
                                 <!-- Direct Video URL -->
                                 <video class="intro-video" id="heroVideo" playsinline preload="auto" controls>
