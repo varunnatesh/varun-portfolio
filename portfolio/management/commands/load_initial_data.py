@@ -3,6 +3,9 @@ from portfolio.models import (
     Skill, Project, Certification, Publication, SiteConfiguration
 )
 from datetime import date
+from django.core.files import File
+import os
+from pathlib import Path
 
 
 class Command(BaseCommand):
@@ -18,6 +21,17 @@ class Command(BaseCommand):
 Experienced in model experimentation, dataset preprocessing, feature engineering, hyperparameter tuning, cross-validation, and performance evaluation using real-world datasets. 
 
 Published IEEE research in deep learning-based object detection. Passionate about building reproducible, data-driven AI solutions and contributing to research-oriented development."""
+        
+        # Set up video file if it exists and not already set
+        video_path = Path('media/videos/intro.mp4')
+        if video_path.exists() and not config.hero_video_file:
+            try:
+                with open(video_path, 'rb') as f:
+                    config.hero_video_file.save('intro.mp4', File(f), save=False)
+                self.stdout.write(self.style.SUCCESS('✓ Video file loaded'))
+            except Exception as e:
+                self.stdout.write(self.style.WARNING(f'⚠ Video upload failed: {e}'))
+        
         config.save()
         self.stdout.write(self.style.SUCCESS('✓ Site configuration loaded'))
         
