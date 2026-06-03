@@ -11,12 +11,3 @@ services:
         value: False
       - key: SECRET_KEY
         generateValue: true
-      - key: DATABASE_URL
-        fromDatabase:
-          name: varun-portfolio-db
-          property: connectionString
-
-databases:
-  - name: varun-portfolio-db
-    databaseName: varun_portfolio
-    user: varun_portfolio
