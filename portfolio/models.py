@@ -153,7 +153,7 @@ class SiteConfiguration(models.Model):
     
     # About Section
     about_title = models.CharField(max_length=200, default="About Me")
-    about_description = models.TextField()
+    about_description = models.TextField(default="", blank=True)
     profile_image = models.ImageField(upload_to='profile/', blank=True, null=True)
     
     # Contact Info
