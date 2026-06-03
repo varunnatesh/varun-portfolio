@@ -26,7 +26,7 @@ from decouple import config
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-90=@cr^5-bbr(*^qdvk7d*p&r)21-y%r74_$02+!gyqq=r(v@!')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True  # Temporarily enabled to see errors
+DEBUG = config('DEBUG', default='False') == 'True'
 
 # Render.com deployment
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
