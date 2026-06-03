@@ -1,0 +1,58 @@
+{% extends 'portfolio/base.html' %}
+{% load static %}
+
+{% block title %}About - Varun K N{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <h1 class="page-title" data-aos="fade-up">About Me</h1>
+        <p class="page-subtitle" data-aos="fade-up" data-aos-delay="100">
+            AI Researcher & Machine Learning Engineer
+        </p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="about-content" data-aos="fade-up">
+            <div class="about-text">
+                <p>{{ config.about_description|linebreaks }}</p>
+                
+                <div class="about-highlights">
+                    <h3>Education</h3>
+                    <div class="education-item">
+                        <h4>Integrated Master of Computer Applications (MCA)</h4>
+                        <p><strong>Amrita Vishwa Vidyapeetham, Mysuru</strong></p>
+                        <p>CGPA: 7.51 (up to 9th Semester)</p>
+                        <p>2021 - 2026</p>
+                    </div>
+                </div>
+                
+                {% if certifications %}
+                <div class="about-highlights">
+                    <h3>Certifications</h3>
+                    <div class="certifications-list">
+                        {% for cert in certifications %}
+                        <div class="cert-item">
+                            <h4>{{ cert.title }}</h4>
+                            <p>{{ cert.issuer }} - {{ cert.issue_date|date:"M Y" }}</p>
+                            {% if cert.credential_url %}
+                            <a href="{{ cert.credential_url }}" target="_blank" class="cert-verify">
+                                Verify <i class="fas fa-external-link-alt"></i>
+                            </a>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>AOS.init({ duration: 800, once: true });</script>
+{% endblock %}

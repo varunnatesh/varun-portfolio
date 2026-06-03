@@ -1,0 +1,336 @@
+{% extends 'portfolio/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero" id="hero">
+    <div class="hero-background">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+    </div>
+    
+    <div class="container">
+        <div class="hero-content {% if config.hero_video_url or config.hero_video_file %}hero-with-video{% endif %}">
+            <!-- Video Section (if video URL exists) -->
+            {% if config.hero_video_url or config.hero_video_file %}
+            <div class="hero-video" data-aos="fade-right" data-aos-duration="1000">
+                <div class="video-decorative-frame">
+                    <div class="frame-corner frame-corner-tl"></div>
+                    <div class="frame-corner frame-corner-tr"></div>
+                    <div class="frame-corner frame-corner-bl"></div>
+                    <div class="frame-corner frame-corner-br"></div>
+                </div>
+                
+                <!-- Video Container with Play Prompt -->
+                <div class="video-container" id="videoContainer">
+                    <div class="video-wrapper">
+                        <video class="intro-video" id="heroVideo" playsinline preload="auto">
+                            {% if config.hero_video_file %}
+                            <source src="{{ config.hero_video_file.url }}" type="video/mp4">
+                            {% elif config.hero_video_url %}
+                            <source src="{{ config.hero_video_url }}" type="video/mp4">
+                            {% endif %}
+                            Your browser does not support the video tag.
+                        </video>
+                        
+                        <!-- Initial Play Prompt (shows before first play) -->
+                        <div class="video-play-prompt" id="playPrompt">
+                            <div class="prompt-circle">
+                                <div class="prompt-pulse"></div>
+                                <button class="prompt-play-btn" id="promptPlayBtn">
+                                    <i class="fas fa-play"></i>
+                                </button>
+                            </div>
+                            <p class="prompt-text">Click to watch my introduction</p>
+                        </div>
+                        
+                        <!-- Hover Overlay (shows during playback) -->
+                        <div class="video-overlay" id="videoOverlay">
+                            <button class="video-play-btn" id="videoPlayBtn">
+                                <i class="fas fa-pause"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="video-caption">
+                    <i class="fas fa-video"></i> 
+                    <span class="caption-text" id="videoCaptionText">Watch My Introduction</span>
+                    <span class="video-duration" id="videoDuration"></span>
+                </div>
+                <div class="video-glow-effect"></div>
+            </div>
+            {% endif %}
+            
+            <div class="hero-text" data-aos="fade-up" data-aos-delay="{% if config.hero_video_url %}200{% else %}0{% endif %}">
+                <h1 class="hero-title">
+                    {{ config.hero_title }}
+                </h1>
+                <p class="hero-subtitle">
+                    <span class="typing-text" id="typingText"></span>
+                    <span class="cursor">|</span>
+                </p>
+                <div class="hero-description">
+                    <p>{{ config.hero_subtitle }}</p>
+                </div>
+                <div class="hero-cta">
+                    <a href="#projects" class="btn btn-primary btn-lg">
+                        <span>{{ config.hero_cta_text }}</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                    <a href="{% url 'contact' %}" class="btn btn-outline btn-lg">
+                        <span>Get In Touch</span>
+                    </a>
+                </div>
+                
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">{{ publications.count }}+</div>
+                        <div class="stat-label">IEEE Publications</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">{{ featured_projects.count }}+</div>
+                        <div class="stat-label">Major Projects</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">{{ certifications.count }}+</div>
+                        <div class="stat-label">Certifications</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="scroll-indicator">
+        <div class="mouse">
+            <div class="wheel"></div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Projects Section -->
+<section class="section projects-section" id="projects">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <span class="section-label">Portfolio</span>
+            <h2 class="section-title">Featured Projects</h2>
+            <p class="section-subtitle">Production-ready ML systems with real-world impact</p>
+        </div>
+        
+        <div class="projects-grid">
+            {% for project in featured_projects %}
+            <div class="project-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1 }}00">
+                <div class="project-card-inner">
+                    <div class="project-image">
+                        {% if project.image %}
+                        <img src="{{ project.image.url }}" alt="{{ project.title }}">
+                        {% else %}
+                        <div class="project-image-placeholder">
+                            <i class="fas fa-project-diagram"></i>
+                        </div>
+                        {% endif %}
+                        <div class="project-overlay">
+                            <a href="{% url 'project_detail' project.slug %}" class="btn btn-white btn-sm">
+                                View Details <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="project-content">
+                        <div class="project-meta">
+                            <span class="project-status status-{{ project.status }}">{{ project.get_status_display }}</span>
+                            <span class="project-date">{{ project.date_completed|date:"M Y" }}</span>
+                        </div>
+                        
+                        <h3 class="project-title">
+                            <a href="{% url 'project_detail' project.slug %}">{{ project.title }}</a>
+                        </h3>
+                        
+                        <p class="project-description">{{ project.short_description }}</p>
+                        
+                        {% if project.accuracy or project.metric_1_value %}
+                        <div class="project-metrics">
+                            {% if project.accuracy %}
+                            <div class="metric">
+                                <i class="fas fa-chart-line"></i>
+                                <span>{{ project.accuracy }}</span>
+                            </div>
+                            {% endif %}
+                            {% if project.metric_1_value %}
+                            <div class="metric">
+                                <i class="fas fa-check-circle"></i>
+                                <span>{{ project.metric_1_label }}: {{ project.metric_1_value }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                        
+                        <div class="project-tech">
+                            {% for tech in project.technologies.split %}
+                            <span class="tech-tag">{{ tech }}</span>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="project-links">
+                            {% if project.github_url %}
+                            <a href="{{ project.github_url }}" target="_blank" rel="noopener" class="project-link">
+                                <i class="fab fa-github"></i> Code
+                            </a>
+                            {% endif %}
+                            {% if project.live_demo_url %}
+                            <a href="{{ project.live_demo_url }}" target="_blank" rel="noopener" class="project-link">
+                                <i class="fas fa-external-link-alt"></i> Demo
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p class="text-center">No featured projects available yet.</p>
+            {% endfor %}
+        </div>
+        
+        <div class="section-cta" data-aos="fade-up">
+            <a href="{% url 'projects' %}" class="btn btn-primary">
+                View All Projects <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Skills Section -->
+<section class="section skills-section">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <span class="section-label">Expertise</span>
+            <h2 class="section-title">Technical Arsenal</h2>
+            <p class="section-subtitle">Tools and technologies I use to build intelligent systems</p>
+        </div>
+        
+        <div class="skills-container">
+            {% for category, skills in skills_by_category.items %}
+            <div class="skill-category" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1 }}00">
+                <h3 class="skill-category-title">
+                    <i class="fas fa-code"></i> {{ category }}
+                </h3>
+                <div class="skills-list">
+                    {% for skill in skills %}
+                    <div class="skill-item">
+                        <div class="skill-header">
+                            <span class="skill-name">{{ skill.name }}</span>
+                            <span class="skill-percentage">{{ skill.proficiency }}%</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width: {{ skill.proficiency }}%"></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Publications Section -->
+{% if publications %}
+<section class="section publications-section">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <span class="section-label">Research</span>
+            <h2 class="section-title">IEEE Publications</h2>
+            <p class="section-subtitle">Peer-reviewed research contributions</p>
+        </div>
+        
+        <div class="publications-grid">
+            {% for publication in publications %}
+            <div class="publication-card" data-aos="fade-up">
+                <div class="publication-icon">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <h3 class="publication-title">{{ publication.title }}</h3>
+                <p class="publication-authors">{{ publication.authors }}</p>
+                <p class="publication-conference">
+                    <i class="fas fa-university"></i> {{ publication.conference }} ({{ publication.year }})
+                </p>
+                <p class="publication-abstract">{{ publication.abstract|truncatewords:30 }}</p>
+                <div class="publication-tags">
+                    {% for keyword in publication.keywords.split %}
+                    <span class="tag">{{ keyword }}</span>
+                    {% endfor %}
+                </div>
+                {% if publication.paper_url %}
+                <a href="{{ publication.paper_url }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline">
+                    <i class="fas fa-external-link-alt"></i> Read Paper
+                </a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Certifications Section -->
+{% if certifications %}
+<section class="section certifications-section">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <span class="section-label">Credentials</span>
+            <h2 class="section-title">Certifications</h2>
+        </div>
+        
+        <div class="certifications-grid">
+            {% for cert in certifications %}
+            <div class="certification-card" data-aos="zoom-in" data-aos-delay="{{ forloop.counter0|add:1 }}00">
+                <div class="cert-icon">
+                    <i class="fas fa-certificate"></i>
+                </div>
+                <h4 class="cert-title">{{ cert.title }}</h4>
+                <p class="cert-issuer">{{ cert.issuer }}</p>
+                <p class="cert-date">{{ cert.issue_date|date:"M Y" }}</p>
+                {% if cert.credential_url %}
+                <a href="{{ cert.credential_url }}" target="_blank" rel="noopener" class="cert-link">
+                    Verify <i class="fas fa-external-link-alt"></i>
+                </a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- CTA Section -->
+<section class="section cta-section">
+    <div class="container">
+        <div class="cta-content" data-aos="zoom-in">
+            <h2 class="cta-title">Let's Build Something Amazing</h2>
+            <p class="cta-text">Have a project in mind? Let's discuss how we can work together.</p>
+            <div class="cta-buttons">
+                <a href="{% url 'contact' %}" class="btn btn-primary btn-lg">
+                    Start a Conversation <i class="fas fa-paper-plane"></i>
+                </a>
+                {% if config.resume_file %}
+                <a href="{{ config.resume_file.url }}" class="btn btn-white btn-lg" download>
+                    <i class="fas fa-download"></i> Download Resume
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Animation Library -->
+<link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    AOS.init({
+        duration: 800,
+        once: true,
+        offset: 100
+    });
+</script>
+{% endblock %}

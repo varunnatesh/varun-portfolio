@@ -1,0 +1,51 @@
+{% extends 'portfolio/base.html' %}
+{% load static %}
+
+{% block title %}Research - Varun K N{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <h1 class="page-title" data-aos="fade-up">Research & Publications</h1>
+        <p class="page-subtitle" data-aos="fade-up" data-aos-delay="100">
+            Peer-reviewed contributions to AI and Deep Learning
+        </p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="publications-grid">
+            {% for publication in publications %}
+            <div class="publication-card publication-full" data-aos="fade-up">
+                <div class="publication-icon">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <h3 class="publication-title">{{ publication.title }}</h3>
+                <p class="publication-authors">{{ publication.authors }}</p>
+                <p class="publication-conference">
+                    <i class="fas fa-university"></i> {{ publication.conference }} ({{ publication.year }})
+                </p>
+                <p class="publication-abstract">{{ publication.abstract }}</p>
+                <div class="publication-tags">
+                    {% for keyword in publication.keywords.split %}
+                    <span class="tag">{{ keyword }}</span>
+                    {% endfor %}
+                </div>
+                {% if publication.paper_url %}
+                <a href="{{ publication.paper_url }}" target="_blank" rel="noopener" class="btn btn-primary">
+                    <i class="fas fa-external-link-alt"></i> Read Full Paper
+                </a>
+                {% endif %}
+            </div>
+            {% empty %}
+            <p>No publications available yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>AOS.init({ duration: 800, once: true });</script>
+{% endblock %}
