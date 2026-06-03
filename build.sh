@@ -2,15 +2,28 @@
 # exit on error
 set -o errexit
 
+echo "=== Starting build process ==="
+
+echo "Installing packages..."
 pip install --upgrade pip
 pip install -r requirements.txt
 
+echo "Collecting static files..."
 python manage.py collectstatic --no-input
-python manage.py migrate
 
-# Load initial data automatically (includes Cloudinary video URL)
-python manage.py load_initial_data
+echo "Running migrations..."
+python manage.py migrate --no-input
 
-# Create superuser automatically if it doesn't exist
-echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.filter(username='admin').exists() or User.objects.create_superuser('admin', 'varunnatesh10@gmail.com', 'admin123varun')" | python manage.py shell
+echo "Checking if admin user exists..."
+python manage.py shell <<EOF
+from django.contrib.auth import get_user_model
+User = get_user_model()
+if not User.objects.filter(username='admin').exists():
+    User.objects.create_superuser('admin', 'varunnatesh10@gmail.com', 'admin123varun')
+    print('Admin user created')
+else:
+    print('Admin user already exists')
+EOF
+
+echo "=== Build complete ==="
 
