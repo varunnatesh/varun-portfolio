@@ -25,36 +25,77 @@
                 <!-- Video Container with Play Prompt -->
                 <div class="video-container" id="videoContainer">
                     <div class="video-wrapper">
-                        {% if config.hero_video_url and 'youtube.com' in config.hero_video_url or 'youtu.be' in config.hero_video_url %}
-                            <!-- YouTube Video -->
-                            {% load static %}
-                            <script>
-                                // Extract YouTube video ID
-                                function getYouTubeID(url) {
-                                    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|shorts\/)([^#&?]*).*/;
-                                    const match = url.match(regExp);
-                                    return (match && match[2].length === 11) ? match[2] : null;
-                                }
-                                const videoID = getYouTubeID("{{ config.hero_video_url }}");
-                            </script>
-                            <iframe class="intro-video youtube-video" id="heroVideo"
-                                src="https://www.youtube.com/embed/${videoID}?enablejsapi=1&controls=1&rel=0&modestbranding=1"
-                                frameborder="0" 
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                allowfullscreen>
-                            </iframe>
-                            <script>
-                                // Set the iframe src with the extracted video ID
-                                document.getElementById('heroVideo').src = `https://www.youtube.com/embed/${videoID}?enablejsapi=1&controls=1&rel=0&modestbranding=1`;
-                            </script>
-                        {% else %}
+                        {% if config.hero_video_url %}
+                            {% if 'youtube.com' in config.hero_video_url or 'youtu.be' in config.hero_video_url %}
+                                <!-- YouTube Video - Check if it's a Short -->
+                                {% if 'shorts' in config.hero_video_url %}
+                                    <!-- YouTube Shorts cannot be embedded - show link instead -->
+                                    <div class="video-placeholder" style="display: flex; align-items: center; justify-content: center; min-height: 400px; background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1)); border-radius: 30px; padding: 40px; text-align: center;">
+                                        <div>
+                                            <i class="fab fa-youtube" style="font-size: 80px; color: #ff0000; margin-bottom: 20px;"></i>
+                                            <h3 style="color: var(--color-primary); margin-bottom: 15px;">Watch My Introduction Video</h3>
+                                            <p style="color: var(--color-text-secondary); margin-bottom: 25px;">This video is hosted on YouTube Shorts</p>
+                                            <a href="{{ config.hero_video_url }}" target="_blank" rel="noopener" class="btn btn-primary btn-lg">
+                                                <i class="fab fa-youtube"></i> Watch on YouTube
+                                            </a>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <!-- Regular YouTube Video -->
+                                    <script>
+                                        // Extract YouTube video ID
+                                        function getYouTubeID(url) {
+                                            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+                                            const match = url.match(regExp);
+                                            return (match && match[2].length === 11) ? match[2] : null;
+                                        }
+                                        const videoID = getYouTubeID("{{ config.hero_video_url }}");
+                                    </script>
+                                    <iframe class="intro-video youtube-video" id="heroVideo"
+                                        frameborder="0" 
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                        allowfullscreen>
+                                    </iframe>
+                                    <script>
+                                        // Set the iframe src with the extracted video ID
+                                        if (videoID) {
+                                            document.getElementById('heroVideo').src = `https://www.youtube.com/embed/${videoID}?enablejsapi=1&controls=1&rel=0&modestbranding=1`;
+                                        }
+                                    </script>
+                                {% endif %}
+                            {% elif 'drive.google.com' in config.hero_video_url %}
+                                <!-- Google Drive Video -->
+                                <script>
+                                    // Extract Google Drive file ID
+                                    function getGoogleDriveID(url) {
+                                        const regExp = /\/file\/d\/([^\/]+)/;
+                                        const match = url.match(regExp);
+                                        return match ? match[1] : null;
+                                    }
+                                    const driveID = getGoogleDriveID("{{ config.hero_video_url }}");
+                                </script>
+                                <iframe class="intro-video youtube-video" id="heroVideo"
+                                    frameborder="0" 
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                    allowfullscreen>
+                                </iframe>
+                                <script>
+                                    // Set the iframe src with Google Drive embed URL
+                                    if (driveID) {
+                                        document.getElementById('heroVideo').src = `https://drive.google.com/file/d/${driveID}/preview`;
+                                    }
+                                </script>
+                            {% else %}
+                                <!-- Direct Video URL -->
+                                <video class="intro-video" id="heroVideo" playsinline preload="auto" controls>
+                                    <source src="{{ config.hero_video_url }}" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            {% endif %}
+                        {% elif config.hero_video_file %}
                             <!-- Regular Video File -->
                             <video class="intro-video" id="heroVideo" playsinline preload="auto" controls>
-                                {% if config.hero_video_file %}
                                 <source src="{{ config.hero_video_file.url }}" type="video/mp4">
-                                {% elif config.hero_video_url %}
-                                <source src="{{ config.hero_video_url }}" type="video/mp4">
-                                {% endif %}
                                 Your browser does not support the video tag.
                             </video>
                             
