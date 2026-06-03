@@ -26,11 +26,14 @@ from decouple import config
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-90=@cr^5-bbr(*^qdvk7d*p&r)21-y%r74_$02+!gyqq=r(v@!')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = config('DEBUG', default='False') == 'True'
 
-ALLOWED_HOSTS = ['varun-portfolio-five-gamma.vercel.app', 'localhost', '127.0.0.1', '.vercel.app']
-if config('ALLOWED_HOSTS', default=''):
-    ALLOWED_HOSTS.extend(config('ALLOWED_HOSTS', default='').split(','))
+# Render.com deployment
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS = [RENDER_EXTERNAL_HOSTNAME, 'localhost', '127.0.0.1']
+else:
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.onrender.com', '.vercel.app']
 
 
 # Application definition
@@ -130,7 +133,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles_build' / 'static'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
 # Media files
