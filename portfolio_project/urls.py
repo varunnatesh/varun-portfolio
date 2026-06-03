@@ -8,7 +8,10 @@ urlpatterns = [
     path('', include('portfolio.urls')),
 ]
 
-# Serve media files in development
+# Serve media files in all environments (including production)
+# On Render free tier, we don't have external storage like S3
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# Serve static files in development
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
