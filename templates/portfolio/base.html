@@ -8,10 +8,20 @@
     <meta name="keywords" content="{% block meta_keywords %}{{ config.meta_keywords|default:'AI, Machine Learning, Deep Learning, YOLO, Computer Vision, Django, Python, ML Engineer' }}{% endblock %}">
     <meta name="author" content="Varun K N">
     
-    <!-- Open Graph / Social Media -->
     <meta property="og:type" content="website">
+    <meta property="og:url" content="https://varun-portfolio-a43b.onrender.com">
     <meta property="og:title" content="{% block og_title %}Varun K N - AI Researcher & ML Engineer{% endblock %}">
     <meta property="og:description" content="{% block og_description %}IEEE published developer building production ML systems{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}{% static 'images/og-image.jpg' %}{% endblock %}">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://varun-portfolio-a43b.onrender.com">
+    <meta name="twitter:title" content="Varun K N - AI Researcher & ML Engineer">
+    <meta name="twitter:description" content="IEEE published developer building production ML systems">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://varun-portfolio-a43b.onrender.com{% block canonical_path %}{{ request.path }}{% endblock %}">
     
     <title>{% block title %}Varun K N - AI Researcher & ML Engineer{% endblock %}</title>
     
