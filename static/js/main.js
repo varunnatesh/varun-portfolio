@@ -243,18 +243,39 @@ document.addEventListener('DOMContentLoaded', function() {
     const videoCaptionText = document.querySelector('#videoCaptionText');
     const videoDuration = document.querySelector('#videoDuration');
     
+    console.log('Video elements found:', {
+        heroVideo: !!heroVideo,
+        videoContainer: !!videoContainer,
+        playPrompt: !!playPrompt,
+        promptPlayBtn: !!promptPlayBtn
+    });
+    
     let hasPlayed = false;
     let isManuallyPaused = false;
     
     if (heroVideo && videoContainer) {
+        console.log('Video source:', heroVideo.querySelector('source')?.src);
+        console.log('Video ready state:', heroVideo.readyState);
         
         // Get and display video duration when loaded
         heroVideo.addEventListener('loadedmetadata', function() {
+            console.log('Video metadata loaded, duration:', this.duration);
             const duration = Math.floor(this.duration);
             const minutes = Math.floor(duration / 60);
             const seconds = duration % 60;
             if (videoDuration) {
                 videoDuration.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            }
+        });
+        
+        // Video error handling
+        heroVideo.addEventListener('error', function(e) {
+            console.error('Video loading error:', e);
+            const source = this.querySelector('source');
+            console.error('Video source:', source?.src);
+            console.error('Error code:', this.error?.code, 'Message:', this.error?.message);
+            if (playPrompt) {
+                playPrompt.innerHTML = '<p style="color: #ef4444; padding: 20px;">Video failed to load. Please check the file.</p>';
             }
         });
         
@@ -274,7 +295,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         function startVideo() {
+            console.log('Starting video...');
             heroVideo.play().then(() => {
+                console.log('Video playing successfully');
                 hasPlayed = true;
                 isManuallyPaused = false;
                 playPrompt.classList.add('hidden');
@@ -283,7 +306,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     videoCaptionText.textContent = 'Now Playing';
                 }
             }).catch(err => {
-                console.log('Video play error:', err);
+                console.error('Video play error:', err);
+                alert('Error playing video: ' + err.message);
             });
         }
         
