@@ -28,7 +28,9 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-90=@cr^5-bbr(*^qdvk7d
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='').split(',') if config('ALLOWED_HOSTS', default='') else ['*']
+ALLOWED_HOSTS = ['varun-portfolio-five-gamma.vercel.app', 'localhost', '127.0.0.1', '.vercel.app']
+if config('ALLOWED_HOSTS', default=''):
+    ALLOWED_HOSTS.extend(config('ALLOWED_HOSTS', default='').split(','))
 
 
 # Application definition
@@ -128,7 +130,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = BASE_DIR / 'staticfiles_build' / 'static'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
 # Media files
