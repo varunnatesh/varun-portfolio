@@ -22,16 +22,9 @@ Published IEEE research in deep learning-based object detection. Passionate abou
         # Set Cloudinary video URL (permanent)
         config.hero_video_url = "https://res.cloudinary.com/darfcqlaf/video/upload/v1780487698/intro_qmzeeq.mp4"
         
-        # Set social links
-        config.github_url = "https://github.com/varunnatesh"
-        config.linkedin_url = "https://linkedin.com/in/varun-k-n-566135251"
-        config.email = "varunnatesh10@gmail.com"
-        config.location = "Mysuru, Karnataka"
-        
         config.save()
         self.stdout.write(self.style.SUCCESS('✓ Site configuration loaded'))
         self.stdout.write(self.style.SUCCESS('✓ Video URL configured'))
-        self.stdout.write(self.style.SUCCESS('✓ Social links configured'))
         
         # Skills
         skills_data = [
