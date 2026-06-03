@@ -25,32 +25,57 @@
                 <!-- Video Container with Play Prompt -->
                 <div class="video-container" id="videoContainer">
                     <div class="video-wrapper">
-                        <video class="intro-video" id="heroVideo" playsinline preload="auto">
-                            {% if config.hero_video_file %}
-                            <source src="{{ config.hero_video_file.url }}" type="video/mp4">
-                            {% elif config.hero_video_url %}
-                            <source src="{{ config.hero_video_url }}" type="video/mp4">
-                            {% endif %}
-                            Your browser does not support the video tag.
-                        </video>
-                        
-                        <!-- Initial Play Prompt (shows before first play) -->
-                        <div class="video-play-prompt" id="playPrompt">
-                            <div class="prompt-circle">
-                                <div class="prompt-pulse"></div>
-                                <button class="prompt-play-btn" id="promptPlayBtn">
-                                    <i class="fas fa-play"></i>
+                        {% if config.hero_video_url and 'youtube.com' in config.hero_video_url or 'youtu.be' in config.hero_video_url %}
+                            <!-- YouTube Video -->
+                            {% load static %}
+                            <script>
+                                // Extract YouTube video ID
+                                function getYouTubeID(url) {
+                                    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|shorts\/)([^#&?]*).*/;
+                                    const match = url.match(regExp);
+                                    return (match && match[2].length === 11) ? match[2] : null;
+                                }
+                                const videoID = getYouTubeID("{{ config.hero_video_url }}");
+                            </script>
+                            <iframe class="intro-video youtube-video" id="heroVideo"
+                                src="https://www.youtube.com/embed/${videoID}?enablejsapi=1&controls=1&rel=0&modestbranding=1"
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen>
+                            </iframe>
+                            <script>
+                                // Set the iframe src with the extracted video ID
+                                document.getElementById('heroVideo').src = `https://www.youtube.com/embed/${videoID}?enablejsapi=1&controls=1&rel=0&modestbranding=1`;
+                            </script>
+                        {% else %}
+                            <!-- Regular Video File -->
+                            <video class="intro-video" id="heroVideo" playsinline preload="auto" controls>
+                                {% if config.hero_video_file %}
+                                <source src="{{ config.hero_video_file.url }}" type="video/mp4">
+                                {% elif config.hero_video_url %}
+                                <source src="{{ config.hero_video_url }}" type="video/mp4">
+                                {% endif %}
+                                Your browser does not support the video tag.
+                            </video>
+                            
+                            <!-- Initial Play Prompt (shows before first play) -->
+                            <div class="video-play-prompt" id="playPrompt">
+                                <div class="prompt-circle">
+                                    <div class="prompt-pulse"></div>
+                                    <button class="prompt-play-btn" id="promptPlayBtn">
+                                        <i class="fas fa-play"></i>
+                                    </button>
+                                </div>
+                                <p class="prompt-text">Click to watch my introduction</p>
+                            </div>
+                            
+                            <!-- Hover Overlay (shows during playback) -->
+                            <div class="video-overlay" id="videoOverlay">
+                                <button class="video-play-btn" id="videoPlayBtn">
+                                    <i class="fas fa-pause"></i>
                                 </button>
                             </div>
-                            <p class="prompt-text">Click to watch my introduction</p>
-                        </div>
-                        
-                        <!-- Hover Overlay (shows during playback) -->
-                        <div class="video-overlay" id="videoOverlay">
-                            <button class="video-play-btn" id="videoPlayBtn">
-                                <i class="fas fa-pause"></i>
-                            </button>
-                        </div>
+                        {% endif %}
                     </div>
                 </div>
                 
