@@ -232,9 +232,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    console.log('Portfolio loaded successfully! 🚀');
-});
-
     // ========== Hero Video Control - Enhanced & Smart ==========
     const heroVideo = document.querySelector('#heroVideo');
     const videoContainer = document.querySelector('#videoContainer');
@@ -390,3 +387,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Check on page load
         checkVideoVisibility();
     }
+    
+    console.log('Portfolio loaded successfully! 🚀');
+});
