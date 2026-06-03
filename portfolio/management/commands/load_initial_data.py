@@ -3,9 +3,6 @@ from portfolio.models import (
     Skill, Project, Certification, Publication, SiteConfiguration
 )
 from datetime import date
-from django.core.files import File
-import os
-from pathlib import Path
 
 
 class Command(BaseCommand):
@@ -22,18 +19,12 @@ Experienced in model experimentation, dataset preprocessing, feature engineering
 
 Published IEEE research in deep learning-based object detection. Passionate about building reproducible, data-driven AI solutions and contributing to research-oriented development."""
         
-        # Set up video file if it exists and not already set
-        video_path = Path('media/videos/intro.mp4')
-        if video_path.exists() and not config.hero_video_file:
-            try:
-                with open(video_path, 'rb') as f:
-                    config.hero_video_file.save('intro.mp4', File(f), save=False)
-                self.stdout.write(self.style.SUCCESS('✓ Video file loaded'))
-            except Exception as e:
-                self.stdout.write(self.style.WARNING(f'⚠ Video upload failed: {e}'))
+        # Set Cloudinary video URL (permanent)
+        config.hero_video_url = "https://res.cloudinary.com/darfcqlaf/video/upload/v1780487698/intro_qmzeeq.mp4"
         
         config.save()
         self.stdout.write(self.style.SUCCESS('✓ Site configuration loaded'))
+        self.stdout.write(self.style.SUCCESS('✓ Video URL configured'))
         
         # Skills
         skills_data = [
